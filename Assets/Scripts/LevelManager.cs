@@ -12,32 +12,36 @@ public class LevelManager : MonoBehaviour
 
     private int _currentSceneId;
     private GameObject[] _musicBoxes;
-    private int[] _playSceneMinMax = {3, 17};
+    private int[] _playSceneMinMaxBuildIndex = {3, 99};
 
     Coroutine _currentLoading;
+
+    private void Start()
+    {
+        // count scene
+        _playSceneMinMaxBuildIndex[1] = 0;
+        FileInfo[] fis = new DirectoryInfo("Assets/Scenes/levels/").GetFiles();
+        foreach (FileInfo fi in fis)
+        {
+            if (fi.Extension.Contains("unity"))
+                _playSceneMinMaxBuildIndex[1]++;
+        }
+        _playSceneMinMaxBuildIndex[1] += _playSceneMinMaxBuildIndex[0] - 1;
+        Debug.Log(_playSceneMinMaxBuildIndex[1]);
+    }
 
     void Update()
     {
         _currentSceneId = SceneManager.GetActiveScene().buildIndex;
 
-        // auto NEXT level
-        
-        /*int i = 0;
-        FileInfo[] fis = d.GetFiles();
-        foreach (FileInfo fi in fis)
-        {
-            if (fi.Extension.Contains("mp3"))
-            i++;
-        }*/
-
         // Win logic for playing levels
-        if (_currentSceneId >= _playSceneMinMax[0] && _currentSceneId <= _playSceneMinMax[1])
+        if (_currentSceneId >= _playSceneMinMaxBuildIndex[0] && _currentSceneId <= _playSceneMinMaxBuildIndex[1])
         {
             _musicBoxes = GameObject.FindGameObjectsWithTag("MusicBox");
 
             if (wonLevel() && _currentLoading == null)
             {
-                if (_playSceneMinMax[1] == _currentSceneId)
+                if (_playSceneMinMaxBuildIndex[1] == _currentSceneId)
                 {
                     LoadLevel(_endSceneName);
                     return;
