@@ -14,11 +14,6 @@ public class AudioMusic : MonoBehaviour
     private float _playtime;
     private float _playtimeOverlap = 0.5f;
 
-    void Start()
-    {
-        
-    }
-
     public void StartButton()
     {
         _musicLoop.loop = true;

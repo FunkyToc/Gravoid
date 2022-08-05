@@ -1,37 +1,62 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.Audio;
 
 public class AudioManager : MonoBehaviour
 {
+    [SerializeField] AudioMixer _masterMixer;
     [Range(0f,1f)]
-    [SerializeField] private float _fadeToVolume = 1.0f;
+    [SerializeField] float _defaultMaster;
     [Range(0f,1f)]
-    [SerializeField] private float _fadePerSecond = 0.1f;
+    [SerializeField] float _defaultMusic;
+    [Range(0f,1f)]
+    [SerializeField] float _defaultSfx;
     
-    private AudioSource[] _musicBoxes;
+    [SerializeField] private Scrollbar _masterScrollbar;
+    [SerializeField] private Scrollbar _musicScrollbar;
+    [SerializeField] private Scrollbar _sfxScrollbar;
 
     void Start()
     {
-        _musicBoxes = GameObject.FindObjectsOfType<AudioSource>();
-        foreach (AudioSource box in _musicBoxes)
-        {
-            if (box.gameObject.layer == 8)
-            {
-                box.Play();
-                StartCoroutine(fadeInBgSound(box, _fadeToVolume, _fadePerSecond));
-            }
-        }
+        SetMasterVolume(_defaultMaster);
+        SetMusicVolume(_defaultMusic);
+        SetSfxVolume(_defaultSfx);
     }
 
-    IEnumerator fadeInBgSound(AudioSource source, float fadeToVolume, float fadePerSeconds)
+    private float NormalizeToVolume(float volume)
     {
-        while (source.volume < fadeToVolume)
-        {
-            source.volume += fadePerSeconds * Time.deltaTime;
-            source.volume = source.volume > fadeToVolume ? fadeToVolume : source.volume;
+        return -80 + (volume * 80);
+    }
 
-            yield return null;
-        }
+    private void SetMasterVolume(float volume)
+    {
+        _masterMixer.SetFloat("master", NormalizeToVolume(volume));
+    }
+
+    private void SetMusicVolume(float volume)
+    {
+        _masterMixer.SetFloat("music", NormalizeToVolume(volume));
+    }
+
+    private void SetSfxVolume(float volume)
+    {
+        _masterMixer.SetFloat("sfx", NormalizeToVolume(volume));
+    }
+
+    public void SetMasterScrollbar()
+    {
+        SetMasterVolume(_masterScrollbar.value);
+    }
+
+    public void SetMusicScrollbar()
+    {
+        SetMusicVolume(_musicScrollbar.value);
+    }
+
+    public void SetSfxScrollbar()
+    {
+        SetSfxVolume(_sfxScrollbar.value);
     }
 }

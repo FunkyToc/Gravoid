@@ -4,16 +4,16 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    static GameManager _singleton;
+    public static GameManager Singleton { get; private set; }
 
     private void Awake()
     {
-        if(_singleton != null)
+        if (Singleton != null)
         {
             Destroy(gameObject);
             return;
         }
-        _singleton = this;
+        Singleton = this;
         DontDestroyOnLoad(gameObject);
     }
 

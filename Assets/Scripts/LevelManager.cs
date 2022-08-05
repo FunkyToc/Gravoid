@@ -6,8 +6,9 @@ using System.IO;
 
 public class LevelManager : MonoBehaviour
 {
+    [SerializeField] string _startSceneName;
+    [SerializeField] string _firstPlaySceneName;
     [SerializeField] string _endSceneName;
-    //private Scene _loadingScreen;
 
     private int _currentSceneId;
     private GameObject[] _musicBoxes;
@@ -29,7 +30,7 @@ public class LevelManager : MonoBehaviour
             i++;
         }*/
 
-
+        // Win logic for playing levels
         if (_currentSceneId >= _playSceneMinMax[0] && _currentSceneId <= _playSceneMinMax[1])
         {
             _musicBoxes = GameObject.FindGameObjectsWithTag("MusicBox");
@@ -65,8 +66,38 @@ public class LevelManager : MonoBehaviour
         return false;
     }
 
-    public void LoadLevel(string levelname)
+    private void LoadLevel(string levelname)
     {
         SceneManager.LoadScene(levelname);
+    }
+    
+    public void PressButton(string levelname = null)
+    {
+        levelname = levelname ?? _firstPlaySceneName;
+
+        if (levelname == _firstPlaySceneName)
+        {
+            PressStartButton();
+            return;
+        }
+        else if (levelname == _startSceneName)
+        {
+            PressRetryButton();
+            return;
+        }
+
+        SceneManager.LoadScene(levelname);
+    }
+
+    private void PressStartButton()
+    {
+        GameManager.Singleton.GetComponentInChildren<AudioMusic>().StartButton();
+        LoadLevel(_firstPlaySceneName);
+    }
+    
+    private void PressRetryButton()
+    {
+        GameManager.Singleton.GetComponentInChildren<AudioMusic>().StartButton();
+        LoadLevel(_startSceneName);
     }
 }
