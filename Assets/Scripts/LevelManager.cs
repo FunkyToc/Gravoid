@@ -2,23 +2,33 @@ using System.Collections;
 using UnityEngine;
 using System.Linq;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 using System.IO;
 
 public class LevelManager : MonoBehaviour
 {
+    [Header("Scene Target")]
+    [Tooltip("Start Scene path")]
     [SerializeField] string _startScenePath;
+    [Tooltip("First level, when press SPACE on Start or Retry")]
     [SerializeField] string _firstPlaySceneName;
+    [Tooltip("Last level that will load the end menu when completed")]
     [SerializeField] string _lastPlaySceneName;
+    [Tooltip("Last Scene path")]
     [SerializeField] string _endScenePath;
 
+    [Header("Scene Transition")]
+    [SerializeField] Image _bgFade;
+    [Range(0f,3f)]
+    [SerializeField] float _fadeSpeed;
+
+    private Coroutine _ccoroutine;
     private int _currentSceneId;
     private GameObject[] _musicBoxes;
     private int[] _playSceneMinMaxBuildIndex = {3, 99};
 
     private void Start()
     {
-        // fade out black screen
-
         StartCoroutine(GetMusicBoxes());
     }
 
@@ -80,11 +90,37 @@ public class LevelManager : MonoBehaviour
 
     private void LoadLevel(string levelname)
     {
-        // transition
-        
+        if (_ccoroutine == null)
+        {
+            _ccoroutine = StartCoroutine(LoadLevelTransition(levelname));
+        }
+    }
+
+    IEnumerator LoadLevelTransition(string levelname)
+    {
+        float alpha;
+
+        // fade in
+        while (_bgFade.color.a < 1)
+        {
+            alpha = _bgFade.color.a + (_fadeSpeed * Time.deltaTime);
+            _bgFade.color = new Color(_bgFade.color.r, _bgFade.color.g, _bgFade.color.b, alpha);
+            yield return null;
+        }
 
         // load
         SceneManager.LoadScene(levelname);
+        yield return new WaitForSeconds(0.2f);
+
+        // fade out
+        while (_bgFade.color.a > 0)
+        {
+            alpha = _bgFade.color.a - (_fadeSpeed * Time.deltaTime);
+            _bgFade.color = new Color(_bgFade.color.r, _bgFade.color.g, _bgFade.color.b, alpha);
+            yield return null;
+        }
+
+        _ccoroutine = null;
     }
     
     public void PressButton(string levelname = null)
