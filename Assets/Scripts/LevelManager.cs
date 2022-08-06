@@ -6,49 +6,57 @@ using System.IO;
 
 public class LevelManager : MonoBehaviour
 {
-    [SerializeField] string _startSceneName;
+    [SerializeField] string _startScenePath;
     [SerializeField] string _firstPlaySceneName;
-    [SerializeField] string _endSceneName;
+    [SerializeField] string _lastPlaySceneName;
+    [SerializeField] string _endScenePath;
 
     private int _currentSceneId;
     private GameObject[] _musicBoxes;
     private int[] _playSceneMinMaxBuildIndex = {3, 99};
 
-    Coroutine _currentLoading;
-
     private void Start()
     {
-        // count scene
-        _playSceneMinMaxBuildIndex[1] = 0;
-        FileInfo[] fis = new DirectoryInfo("Assets/Scenes/levels/").GetFiles();
-        foreach (FileInfo fi in fis)
-        {
-            if (fi.Extension.Contains("unity"))
-                _playSceneMinMaxBuildIndex[1]++;
-        }
-        _playSceneMinMaxBuildIndex[1] += _playSceneMinMaxBuildIndex[0] - 1;
-        Debug.Log(_playSceneMinMaxBuildIndex[1]);
+        // fade out black screen
+
+        StartCoroutine(GetMusicBoxes());
     }
+
 
     void Update()
     {
         _currentSceneId = SceneManager.GetActiveScene().buildIndex;
 
         // Win logic for playing levels
-        if (_currentSceneId >= _playSceneMinMaxBuildIndex[0] && _currentSceneId <= _playSceneMinMaxBuildIndex[1])
+        if (SceneManager.GetActiveScene().path.Contains("levels") && SceneManager.GetActiveScene().name.Contains("lvl"))
         {
-            _musicBoxes = GameObject.FindGameObjectsWithTag("MusicBox");
-
-            if (wonLevel() && _currentLoading == null)
+            // check score
+            if (_musicBoxes != null && wonLevel())
             {
-                if (_playSceneMinMaxBuildIndex[1] == _currentSceneId)
+                // reset for next level
+                _musicBoxes = null;
+
+                // last scene
+                if (SceneManager.GetActiveScene().name == _lastPlaySceneName)
                 {
-                    LoadLevel(_endSceneName);
+                    LoadLevel(_endScenePath);
                     return;
                 }
 
-                SceneManager.LoadScene(_currentSceneId + 1);
+                // next level
+                LoadLevel(SceneUtility.GetScenePathByBuildIndex(_currentSceneId + 1));
+                return;
             }
+        }
+    }
+
+    IEnumerator GetMusicBoxes()
+    {
+        // update slowly musicbox 
+        while (true)
+        {
+            _musicBoxes = GameObject.FindGameObjectsWithTag("MusicBox");
+            yield return new WaitForSeconds(1f);
         }
     }
 
@@ -72,6 +80,10 @@ public class LevelManager : MonoBehaviour
 
     private void LoadLevel(string levelname)
     {
+        // transition
+        
+
+        // load
         SceneManager.LoadScene(levelname);
     }
     
@@ -84,13 +96,13 @@ public class LevelManager : MonoBehaviour
             PressStartButton();
             return;
         }
-        else if (levelname == _startSceneName)
+        else if (levelname == _startScenePath)
         {
             PressRetryButton();
             return;
         }
 
-        SceneManager.LoadScene(levelname);
+        LoadLevel(levelname);
     }
 
     private void PressStartButton()
@@ -102,6 +114,6 @@ public class LevelManager : MonoBehaviour
     private void PressRetryButton()
     {
         GameManager.Singleton.GetComponentInChildren<AudioMusic>().StartButton();
-        LoadLevel(_startSceneName);
+        LoadLevel(_startScenePath);
     }
 }

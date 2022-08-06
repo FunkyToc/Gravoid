@@ -2268,9 +2268,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f0c2098c04474e24ebc2d7180fdb1154, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _startSceneName: _StartMenu
-  _firstPlaySceneName: Scenes/levels/lvl1-1
-  _endSceneName: _EndMenu
+  _startScenePath: _StartMenu
+  _firstPlaySceneName: lvl1-1
+  _lastPlaySceneName: lvl5-5
+  _endScenePath: _EndMenu
 --- !u!1 &5390933991891512955
 GameObject:
   m_ObjectHideFlags: 0
