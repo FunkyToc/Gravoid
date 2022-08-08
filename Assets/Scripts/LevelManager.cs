@@ -7,6 +7,8 @@ using System.IO;
 
 public class LevelManager : MonoBehaviour
 {
+    public static LevelManager __LevelManager { get; private set; }
+
     [Header("Scene Target")]
     [Tooltip("Start Scene path")]
     [SerializeField] string _startScenePath;
@@ -29,9 +31,14 @@ public class LevelManager : MonoBehaviour
 
     private void Start()
     {
+        if (__LevelManager != null)
+        {
+            Destroy(gameObject);
+        }
+        __LevelManager = this;
+
         StartCoroutine(GetMusicBoxes());
     }
-
 
     void Update()
     {

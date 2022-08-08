@@ -27,7 +27,7 @@ public class AudioManager : MonoBehaviour
 
     private float NormalizeToVolume(float volume)
     {
-        return -80 + (volume * 80);
+        return -40 + (volume * 40);
     }
 
     private void SetMasterVolume(float volume)

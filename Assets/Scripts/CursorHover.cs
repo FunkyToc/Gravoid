@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class CursorHover : MonoBehaviour
 {
-    [SerializeField] Camera _camera;
     [SerializeField] Texture2D _cursorBase;
     [SerializeField] Texture2D _cursorMove;
     [SerializeField] Texture2D _cursorResize;

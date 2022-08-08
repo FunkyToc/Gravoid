@@ -4,8 +4,13 @@ using UnityEngine.SceneManagement;
 
 public class StartGame : MonoBehaviour
 {
-    [SerializeField] LevelManager _levelManager;
+    LevelManager _levelManager;
     [SerializeField] string _targetSceneName;
+
+    void Start()
+    {
+        _levelManager = LevelManager.__LevelManager;
+    }
 
     void Update()
     {
