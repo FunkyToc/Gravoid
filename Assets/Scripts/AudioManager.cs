@@ -27,6 +27,8 @@ public class AudioManager : MonoBehaviour
 
     private float NormalizeToVolume(float volume)
     {
+        if (volume <= 0f) return -80;
+
         return -40 + (volume * 40);
     }
 
