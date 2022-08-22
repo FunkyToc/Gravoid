@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class MouseInteractions : MonoBehaviour
 {
+    [SerializeField] bool interactable = true;
     [Range(0.6f, 10f)]
     [SerializeField] private float _minRadius = 0.6f;
     [Range(0.6f, 10f)]
@@ -21,6 +22,8 @@ public class MouseInteractions : MonoBehaviour
 
     void Update()
     {
+        if (!interactable) return;
+
         if (_mouseLock == true)
         {
             Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition); mousePos.z = 0;
