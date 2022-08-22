@@ -18,7 +18,7 @@ public class CursorHover : MonoBehaviour
     {
         RaycastHit2D hitMove = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero, 0.01f, 1<<9);
         RaycastHit2D hitResize = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero, 0.01f, 1<<10);
-        
+
         if (hitMove.collider != null)
         {
             Cursor.SetCursor(_cursorMove, new Vector2(16f, 16f), CursorMode.Auto);
