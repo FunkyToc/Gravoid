@@ -14,7 +14,7 @@ public class StartGame : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown("space"))
+        if (Input.GetKeyDown(KeyCode.Space))
         {
             _levelManager.PressButton(_targetSceneName);
         }
